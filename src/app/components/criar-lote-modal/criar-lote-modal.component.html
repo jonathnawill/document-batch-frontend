@@ -1,0 +1,90 @@
+<div class="modal-backdrop fade show" (click)="fechar()"></div>
+
+<div class="modal d-block">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Novo Lote</h5>
+        <button type="button" class="btn-close" (click)="fechar()" aria-label="Fechar"></button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="confirmar()">
+        <div class="modal-body">
+
+          @if (erro) {
+            <div class="alert alert-danger py-2 mb-3">{{ erro }}</div>
+          }
+
+          <div class="mb-3">
+            <label class="form-label" for="operador">Operador</label>
+            <input
+              id="operador"
+              class="form-control"
+              formControlName="operador"
+              placeholder="ex: joao.silva"
+              [class.is-invalid]="form.get('operador')?.invalid && form.get('operador')?.touched"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="processo">Processo</label>
+            <input
+              id="processo"
+              class="form-control"
+              formControlName="processo"
+              placeholder="ex: ABERTURA_CONTA"
+              [class.is-invalid]="form.get('processo')?.invalid && form.get('processo')?.touched"
+            />
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <label class="form-label mb-0">Documentos</label>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="adicionarDocumento()">
+              + Adicionar
+            </button>
+          </div>
+
+          <div formArrayName="documentos">
+            @for (doc of documentoGroups; track $index) {
+              <div class="row g-2 mb-2" [formGroupName]="$index">
+                <div class="col">
+                  <input
+                    class="form-control form-control-sm"
+                    formControlName="tipo"
+                    placeholder="Tipo (ex: RG)"
+                    [class.is-invalid]="doc.get('tipo')?.invalid && doc.get('tipo')?.touched"
+                  />
+                </div>
+                <div class="col">
+                  <input
+                    class="form-control form-control-sm"
+                    formControlName="nome"
+                    placeholder="Nome (ex: rg_frente.jpg)"
+                    [class.is-invalid]="doc.get('nome')?.invalid && doc.get('nome')?.touched"
+                  />
+                </div>
+                @if (documentos.length > 1) {
+                  <div class="col-auto">
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="removerDocumento($index)" aria-label="Remover">
+                      ✕
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="fechar()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="enviando">
+            {{ enviando ? 'Criando...' : 'Criar Lote' }}
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
